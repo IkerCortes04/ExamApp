@@ -1,0 +1,50 @@
+services:
+  # Frontend (Vite)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: frontendContainer
+    ports:
+      - "8000"
+    networks:
+      - examenInternal
+    depends_on:
+      - backend
+
+  # Backend (PHP API)
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: backendContainer
+    ports:
+      - "3306"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+    networks:
+      - examenInternal
+    depends_on:
+      - mysql
+
+  # Base de Datos
+  mysql:
+    build:
+        dockerfile: database.Dockerfile
+    container_name: databaseContainer
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=schema
+    volumes:
+      - databaseVolume:/var/lib/mysql
+    networks:
+      - examenInternal
+
+networks:
+  examenInternal:
+    driver: bridge
+
+volumes:
+  databaseVolume:
