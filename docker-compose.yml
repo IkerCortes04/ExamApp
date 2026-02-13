@@ -1,5 +1,5 @@
 services:
-  # Frontend (Vite)
+  # Frontend
   frontend:
     build:
       context: .
@@ -12,14 +12,14 @@ services:
     depends_on:
       - backend
 
-  # Backend (PHP API)
+  # Backend
   backend:
     build:
       context: .
       dockerfile: backend.Dockerfile
     container_name: backendContainer
     ports:
-      - "3306:80"
+      - "8080:80"
     environment:
       - DB_HOST=mysql
       - DB_USER=root
@@ -34,9 +34,10 @@ services:
     build:
         dockerfile: database.Dockerfile
     container_name: databaseContainer
+    ports:
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=schema
     volumes:
       - databaseVolume:/var/lib/mysql
     networks:
